@@ -3,7 +3,11 @@ package com.inflearn.jpa.practice.jpashop.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +19,7 @@ import lombok.Setter;
 public class Member {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -27,4 +31,6 @@ public class Member {
 
     private String zipcode;
 
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
 }
