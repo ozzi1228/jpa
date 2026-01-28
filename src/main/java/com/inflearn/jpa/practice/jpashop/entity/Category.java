@@ -5,7 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,25 +18,32 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Item {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
+    @Column(name = "category_id")
     private Long id;
-
     private String name;
 
-    private int price;
+    @OneToMany(mappedBy = "category")
+    private List<CategoryItem> categoryItems = new ArrayList<>();
 
-    private int stockQuantity;
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Category parent;
 
-    @OneToMany(mappedBy = "item")
-    private List<CategoryItem> categoryItems;
+    @OneToMany(mappedBy = "parent")
+    private List<Category> child;
 
-    // == 연관관계 매핑 ==
+    // == 연관관계 메소드 ==
+    public void addChildCategory(Category child) {
+        this.child.add(child);
+        child.setParent(this);
+    }
+
     public void addCategoryItem(CategoryItem categoryItem) {
         this.categoryItems.add(categoryItem);
-        categoryItem.setItem(this);
+        categoryItem.setCategory(this);
     }
 }
